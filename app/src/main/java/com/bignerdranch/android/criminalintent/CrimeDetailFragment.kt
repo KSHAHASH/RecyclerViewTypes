@@ -28,7 +28,8 @@ class CrimeDetailFragment : Fragment() {
             id = UUID.randomUUID(),
             title = "",
             date = Date(),
-            isSolved = false
+            isSolved = false,
+            requiresPolice = false
         )
     }
 
@@ -57,6 +58,7 @@ class CrimeDetailFragment : Fragment() {
             //so we are creating a new instance of the crime
             //doOnTextChanged is a listener for EditText class
             crimeTitle.doOnTextChanged { text, _, _, _ ->
+                //since we have used val crime in ListViewModel to create instance of Crime so to update the data we use this copy approach
                 crime = crime.copy(title = text.toString())
             }
 
@@ -74,6 +76,9 @@ class CrimeDetailFragment : Fragment() {
         }
 
     }
+
+    //onDestroyView() is called when the fragments view is about to be destroyed, in this case we are setting the backing property of _binding to null
+    //which releases the references of the binding object,
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
