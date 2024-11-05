@@ -67,6 +67,20 @@ class SeriousCrimeHolder(private val binding: ListItemSeriousCrimeBinding): Crim
 
     class CrimeListAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<CrimeTemplate>() {
 
+        //declare the constants inside the class level and make it private so that it is accessible only within the class level
+        companion object {
+            private const val VIEW_TYPE_NORMAL = 0
+            private const val VIEW_TYPE_SERIOUS = 1
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if(crimes[position].requiresPolice) {
+                VIEW_TYPE_SERIOUS
+            } else {
+                VIEW_TYPE_NORMAL
+            }
+        }
+
         //creates a binding to display, wrapping the view in a view holder, inflate and bind
         //to create the viewHolder for the recyclerView along with its binding
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeTemplate {
@@ -77,8 +91,13 @@ class SeriousCrimeHolder(private val binding: ListItemSeriousCrimeBinding): Crim
             //when we are calling parent.context it is calling the context of the recyclerView which is indeed set to the Activity because
             //activity is hosting the recyclerView
             val inflater = LayoutInflater.from(parent.context)
-            val binding = ListItemSeriousCrimeBinding.inflate(inflater, parent, false)
-            return SeriousCrimeHolder(binding)
+            return if (viewType == VIEW_TYPE_SERIOUS) {
+                val binding = ListItemSeriousCrimeBinding.inflate(inflater, parent, false)
+                SeriousCrimeHolder(binding)
+            } else {
+                val binding = ListItemCrimeBinding.inflate(inflater, parent, false)
+                CrimeHolder(binding)
+            }
         }
 
         // responsible for populating a given viewHolder with the crime from the given position
